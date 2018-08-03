@@ -14,6 +14,7 @@ JAVA
   * [접근제한자](#접근제한자)
   * [자바 유틸 패키지 경로](#자바-유틸-패키지-경로)
   * [native 키워드](#native-키워드)
+  * [Junit Spring Test](#junit-spring-test)
 
 {:toc}
 
@@ -386,4 +387,114 @@ native 키워드
 Thread 클래스를 살펴보다가 ```native```라는 키워드를 봤다. 처음 보는 거라 검색해봤다.
 ```
 native는 자바가 아닌 언어(보통 C나 C++)로 구현한 후 자바에서 사용하려고 할 때 이용하는 키워드이다. 자바로 구현하기 까다로운 것을 다른 언어로 구현해서, 자바에서 사용하기 위한 방법이다. 구현할때 JNI(Java Native Interface)를 사용한다.
+```
+
+Junit Spring Test
+----------
+
+![](https://i.imgur.com/hTmewY7.png)
+
+
+
+클래스를 생성하면 다음의 코드를 볼 수 있다..
+```java
+package com.nts.connect.pjt3.dao;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+public class ProductDaoTest {
+	@Test
+	public void test() {
+		fail("Not yet implemented");
+	}
+
+}
+```
+
+
+
+```xml
+	<!-- spring-test -->
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-test</artifactId>
+		<version>${spring.version}</version>
+		<scope>test</scope>
+	</dependency>
+```
+
+
+
+
+
+
+
+다음의 어노테이션을 추가한다.
+```
+@RunWith(SpringJUnit4ClassRunner.class) : JUnit Test 클래스를 실행하기 위한 러너(Runner)를 명시적으로 지정한다.
+```
+
+```java
+package com.nts.connect.pjt3.dao;
+
+import static org.junit.Assert.fail;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+
+@ContextConfiguration
+public class ProductDaoTest {
+
+	@Test
+	public void test() {
+		fail("Not yet implemented");
+	}
+}
+```
+혹시 ```SpringJUnit4ClassRunner```가 import 되지 않으면 spring 폴더를 지우고 다시 시도하니까 됩니다.
+
+최종 Test 코드
+```java
+package com.nts.connect.pjt3.dao;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.nts.connect.pjt3.config.ApplicationConfig;
+import com.nts.connect.pjt3.dto.ProductDto;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+
+@ContextConfiguration(classes = {ApplicationConfig.class})
+public class ProductDaoTest {
+
+	@Autowired
+	ProductDao dao;
+
+	@Test
+	public void testSelect() {
+		List<ProductDto> list = dao.selectAll(0, 50);
+		int cnt = 0;
+		for (ProductDto ele : list) {
+			System.out.println(ele.getId());
+			cnt++;
+		}
+		assertEquals(50, cnt);
+	}
+
+}
+
 ```
