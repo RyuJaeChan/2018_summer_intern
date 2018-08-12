@@ -64,6 +64,7 @@ public class MyBatisConfig {
 
     @Bean
     public SqlSessionTemplate sqlSession(SqlSessionFactory sqlSessionFactory) {
+        	sqlSessionFactory.getConfiguration().setMapUnderscoreToCamelCase(true);	//dto camelcase 적용되게
         return new SqlSessionTemplate(sqlSessionFactory);
     }
 
@@ -172,7 +173,7 @@ public class CategoryService {
 
 Data Binding
 ====
-- Data 타입에 어노테이션으로 형식 지정이 가능하다. : ```@DateTimeFormat(patern = "yyyy/mm/dd")
+- Data 타입에 어노테이션으로 형식 지정이 가능하다. : ```@DateTimeFormat(patern = "yyyy/mm/dd")```
 - 숫자 역시 ```@NumberFormat(pattern = "#,###")``` 식으로 매핑이 됨
 
 
