@@ -10,7 +10,7 @@ JAVA
   * [AutoCloseable](#autocloseable)
   * [<>제네릭](#<>-제네릭)
   * [jdbc management](#jdbc-management)
-  * [이클립스 단축키](#이클립스-단축키들)
+  * [이클립스 단축키](#이클립스-단축키)
   * [접근제한자](#접근제한자)
   * [자바 유틸 패키지 경로](#자바-유틸-패키지-경로)
   * [native 키워드](#native-키워드)
