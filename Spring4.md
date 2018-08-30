@@ -121,9 +121,36 @@ lombok
 
 dependency 추가
 ```xml
-
+	<!-- Lombok -->
+	<dependency>
+		<groupId>org.projectlombok</groupId>
+		<artifactId>lombok</artifactId>
+		<version>1.18.2</version>
+		<scope>provided</scope>
+	</dependency>
 ```
 
-설치된 경로 ```C:\Users\USER\.m2\repository\org\projectlombok\lombok\1.18.2```에 가서 lombok.jar 파일을 실행시켜 설치한다.
+설치된 경로 ```C:\Users\USER\.m2\repository\org\projectlombok\lombok\1.18.2```에 가서 lombok.jar 파일을 실행시켜 설치한다. STS는 경로를 직접 찾아서 지정해줘야한다고 한다.
 
 ![](https://i.imgur.com/2YrPruJ.png)
+
+
+Data Binding
+====
+- Data 타입에 어노테이션으로 형식 지정이 가능하다. : ```@DateTimeFormat(patern = "yyyy/mm/dd")``` 
+- 숫자 역시 ```@NumberFormat(pattern = "#,###")``` 식으로 매핑이 됨
+- ```jackson-datatype-jsr310 dependency``` 추가
+- 이후 LocalDateTime의 어노테이션으로 ```@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")```을 하면 올바른 형식을 포매팅이 됩니다.
+
+```xml
+<dependency>
+    <groupId>com.fasterxml.jackson.datatype</groupId>
+    <artifactId>jackson-datatype-jsr310</artifactId>
+    <version>${jackson2.version}</version>
+</dependency>
+```
+- LocalDateTime보다 Date가 더 좋은것 같다.
+  - 이런 쓸데없는 추가 작업이 필요 없다
+  - 포매팅 관련 문제가 많다 : Serializer/Deserializer를 직접 만들어서 쓴다.
+- LocalDateTime을 ```yyyy-MM-dd```로 포매팅이 안되서 저런 포맷을 쓰는데는 LocalDate로 바꿨다...
+- 사실 DTO에서 지정하는게 별로 좋지는 않은거 같다.
