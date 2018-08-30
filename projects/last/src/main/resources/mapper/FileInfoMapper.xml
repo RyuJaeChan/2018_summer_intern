@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nts.connect.pjt3.mapper.FileInfoMapper">
+	<insert id="insertFileInfoList"
+			parameterType="list"
+			keyProperty="id"
+			useGeneratedKeys="true">
+			
+		INSERT INTO file_info(
+			file_name,
+			save_file_name,
+			content_type,
+			delete_flag,
+			create_date,
+			modify_date
+		)
+		VALUES
+		<foreach collection="list" item="file" separator=",">
+		(
+			#{file.fileName},
+			#{file.saveFileName},
+			#{file.contentType},
+			#{file.deleteFlag},
+			NOW(),
+			NOW()
+		)
+		</foreach>
+	</insert>
+</mapper>

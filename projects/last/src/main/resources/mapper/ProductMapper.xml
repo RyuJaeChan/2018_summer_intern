@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nts.connect.pjt3.mapper.ProductMapper">
+ 
+ 	<resultMap id="ProductWithComment" type="com.nts.connect.pjt3.dto.Product">
+ 		<result property="id" column="id" />
+ 		<collection
+ 			property="userCommentList"
+ 			column="id"
+ 			javaType="java.util.ArrayList"
+ 			ofType="UserComment"
+ 			select="com.nts.connect.pjt3.mapper.UserCommentMapper.selectUserCommentLimit">
+ 		</collection>
+	</resultMap>
+	
+	<resultMap id="ProductWithPrice" type="com.nts.connect.pjt3.dto.Product">
+ 		<result property="id" column="id" />
+ 		<collection
+ 			property="productPriceList"
+ 			column="id"
+ 			javaType="java.util.ArrayList"
+ 			ofType="ProductPrice"
+ 			select="selectProductPricesByProductId">
+ 		</collection>
+	</resultMap>
+	
+	<select 
+		id="selectProductWithCommentByDisplayInfotId"
+		resultMap="ProductWithComment">
+		SELECT p.id
+			, c.id AS categoryId
+			, c.name
+			, di.id AS displayInfoId
+			, p.description
+			, p.content
+			, p.event
+			, di.opening_hours
+			, di.place_name
+			, di.place_lot
+			, di.place_street
+			, di.tel
+			, di.homepage
+			, di.email
+			, di.create_date
+			, di.modify_date
+			, fi.save_file_name
+		FROM product AS p
+			INNER JOIN display_info AS di 
+				ON p.id = di.product_id
+			INNER JOIN category AS c
+				ON p.category_id = c.id
+			INNER JOIN product_image AS pi
+				ON p.id = pi.product_id
+			INNER JOIN file_info AS fi
+				ON pi.file_id = fi.id
+		WHERE pi.type = "ma"
+			AND di.id = ${displayInfoId}
+	</select>
+	
+	<select id="selectProductPricesByProductId" resultType="ProductPrice">
+		SELECT pp.id
+			, pp.product_id
+			, pp.price_type_name
+			, pp.price
+			, pp.discount_rate
+			, pp.create_date
+			, pp.modify_date
+		FROM product_price AS pp
+		WHERE pp.product_id = #{productId}
+		ORDER BY pp.id ASC
+	</select>
+	
+	<select 
+		id="selectProductWithPriceByDisplayInfotId"
+		resultMap="ProductWithPrice">
+		SELECT p.id
+			, p.event
+			, di.opening_hours
+			, di.place_name
+			, fi.save_file_name
+		FROM product AS p
+			INNER JOIN display_info AS di 
+				ON p.id = di.product_id
+			INNER JOIN product_image AS pi
+				ON p.id = pi.product_id
+			INNER JOIN file_info AS fi
+				ON pi.file_id = fi.id
+		WHERE pi.type = "ma"
+			AND di.id = ${displayInfoId}
+	</select>
+	
+	<select id="selectProduct" resultType="Product">
+		SELECT p.id
+			, p.content
+		 	, p.description
+			, p.event
+			, di.opening_hours
+			, di.place_name
+		FROM product AS p
+			INNER JOIN display_info AS di 
+				ON p.id = di.product_id
+		WHERE p.id = #{productId}
+	</select>
+	
+	
+	<sql id="THUMBNAIL_FROM_FIELD">
+		FROM product AS p
+			INNER JOIN display_info AS di
+				ON p.id = di.product_id
+			INNER JOIN category AS c
+				ON p.category_id = c.id
+			INNER JOIN product_image AS pi
+				ON p.id = pi.product_id
+			INNER JOIN file_info AS fi
+				ON pi.file_id = fi.id
+	</sql>
+	
+	<select 
+		id="selectProductThumbnailsByCategoryId"
+		parameterType="int"
+		resultType="ProductThumbnail">
+		SELECT p.id
+			, p.description
+			, p.content
+			, di.id AS displayInfoId
+			, di.place_name
+			, fi.save_file_name
+		<include refid="THUMBNAIL_FROM_FIELD" />
+		WHERE pi.type = "th"
+		<if test ="categoryId != 0">
+			AND c.id = #{categoryId}
+		</if>
+		ORDER BY p.id ASC limit #{start}, #{limit}
+	</select>
+	
+	<select
+		id="selectProductThumbnailCountByCategoryId"
+		parameterType="int"
+		resultType="int">
+		SELECT COUNT(*)
+		<include refid="THUMBNAIL_FROM_FIELD" />
+		WHERE pi.type = "th"
+		<if test ="categoryId != 0">
+			AND c.id = #{categoryId}
+		</if>
+	</select>
+
+	<select id="selectProductsImageByProductIdAndType" resultType="ProductImage">
+		SELECT pi.product_id
+			, pi.id AS productImageId
+			, pi.type
+			, fi.id AS fileInfoId
+			, fi.save_file_name
+			, fi.file_name
+			, fi.content_type
+			, fi.delete_flag
+			, fi.create_date
+			, fi.modify_date
+		FROM display_info AS di
+			LEFT JOIN product_image AS pi
+				ON di.product_id = pi.product_id
+			INNER JOIN file_info AS fi
+				ON pi.file_id = fi.id
+		WHERE di.id = #{displayInfoId}
+			AND pi.type = #{type}
+	</select>
+
+</mapper>
+

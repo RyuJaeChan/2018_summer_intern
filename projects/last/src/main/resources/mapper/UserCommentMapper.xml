@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nts.connect.pjt3.mapper.UserCommentMapper">
+
+	<resultMap id="Comment" type="com.nts.connect.pjt3.dto.UserComment">
+ 		<result property="id" column="id" />
+ 		<collection
+ 			property="userCommentImageList"
+ 			column="id"
+ 			javaType="java.util.ArrayList"
+ 			ofType="UserCommentImage"
+ 			select="com.nts.connect.pjt3.mapper.UserCommentMapper.selectUserCommentImage">
+ 		</collection>
+	</resultMap>
+
+	<select id="selectUserCommentImage" resultType="UserCommentImage">
+		SELECT ruci.id 
+			, fi.save_file_name
+		FROM reservation_user_comment_image AS ruci
+			INNER JOIN file_info AS fi
+				ON ruci.file_id = fi.id
+		WHERE ruci.reservation_user_comment_id = #{id}
+	</select>
+
+	<sql id="SELECT_FIELD">
+		SELECT ruc.id
+			, ruc.product_id
+			, ruc.comment
+			, ruc.score
+			, ruc.create_date
+			, ruc.modify_date
+			, ri.reservation_email
+			, ri.reservation_date
+	</sql>
+	
+	<sql id="FROM_FIELD">
+		FROM reservation_user_comment AS ruc
+			INNER JOIN reservation_info AS ri
+				ON ri.id = ruc.reservation_info_id
+	</sql>
+	
+	<select id="selectUserCommentLimit" resultMap="Comment">
+		<include refid="SELECT_FIELD" />
+		<include refid="FROM_FIELD" />
+		WHERE ruc.product_id = #{productId}
+		LIMIT 3
+	</select>
+	
+	<select id="selectUserCommentAll" resultMap="Comment">
+		<include refid="SELECT_FIELD" />
+		<include refid="FROM_FIELD" />
+		WHERE ruc.product_id = #{productId}
+	</select>
+	
+	<select id="selectUserComment" resultMap="Comment">
+		<include refid="SELECT_FIELD" />
+		<include refid="FROM_FIELD" />
+		WHERE ruc.id = #{id}
+	</select>
+	
+	<select id="selectCommentCount" resultType="long">
+		SELECT COUNT(*)
+		<include refid="FROM_FIELD" />
+		WHERE ruc.product_id = #{productId}
+	</select>
+	
+	<select id="selectAverageScore" resultType="BigDecimal">
+		SELECT AVG(score)
+		<include refid="FROM_FIELD" />
+		WHERE ruc.product_id = #{productId}
+	</select>
+	
+	<insert id="insertComment"
+			parameterType="UserComment"
+			useGeneratedKeys="true"
+			keyProperty="id">
+	
+		INSERT INTO reservation_user_comment(
+			product_id,
+			reservation_info_id,
+			score,
+			comment,
+			create_date,
+			modify_date
+		)
+		VALUES(
+			#{productId},
+			#{reservationInfoId},
+			#{score},
+			#{comment},
+			NOW(),
+			NOW()
+		)
+	</insert>
+	
+	<insert id="insertCommentImages"
+			parameterType="UserCommentImage"
+			useGeneratedKeys="true"
+			keyProperty="id">
+			
+		INSERT INTO reservation_user_comment_image(
+			reservation_info_id,
+			reservation_user_comment_id,
+			file_id
+		)
+		VALUES
+		<foreach collection="list" item="fileInfo" separator=",">
+		(
+			#{reservationInfoId},
+			#{userCommentId},
+			#{fileInfo.id}
+		)
+		</foreach>
+	</insert>
+
+</mapper>
