@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nts.connect.pjt3.mapper.ProductImageMapper">
+	<select id="selectProductsImageByProductIdAndType" resultType="ProductImage">
+		SELECT product_image.product_id
+			, product_image.id AS productImageId
+			, product_image.type
+			, file_info.id AS fileInfoId
+			, file_info.save_file_name
+			, file_info.file_name
+			, file_info.content_type
+			, file_info.delete_flag
+			, file_info.create_date
+			, file_info.modify_date
+		FROM display_info
+			LEFT JOIN product_image
+				ON display_info.product_id = product_image.product_id
+			INNER JOIN file_info
+				ON product_image.file_id = file_info.id
+		WHERE display_info.id = #{displayInfoId}
+			AND product_image.type = #{type}
+	</select>
+	<select id="selectProductImageCount" resultType="long">
+		SELECT COUNT(*)
+		FROM display_info
+			LEFT JOIN product_image
+				ON display_info.product_id = product_image.product_id
+			INNER JOIN file_info
+				ON product_image.file_id = file_info.id
+		WHERE display_info.id = #{displayInfoId}
+			AND product_image.type = #{type}
+	</select>
+</mapper>

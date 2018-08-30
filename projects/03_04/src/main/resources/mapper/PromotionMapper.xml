@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nts.connect.pjt3.mapper.PromotionMapper">
+	<select id="selectPromotionsAll" resultType="Promotion">
+		SELECT promotion.id AS id, product.id AS productId, product.description, file_info.save_file_name
+		FROM promotion
+			INNER JOIN product
+				ON promotion.product_id = product.id
+			INNER JOIN product_image
+				ON product.id = product_image.product_id
+			INNER JOIN file_info
+				ON product_image.file_id = file_info.id
+		WHERE product_image.type="ma"
+	</select>
+	<select id="selectPromotionCount" resultType="long">
+		SELECT COUNT(*)
+		FROM promotion
+			INNER JOIN product
+				ON promotion.product_id = product.id
+			INNER JOIN product_image
+				ON product.id = product_image.product_id
+			INNER JOIN file_info
+				ON product_image.file_id = file_info.id
+		WHERE product_image.type="ma"
+	</select>
+</mapper>

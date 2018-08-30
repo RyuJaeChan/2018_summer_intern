@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nts.connect.pjt3.mapper.ProductThumbnailMapper">
+
+	<select id="getProductThumbnailsByCategoryId" parameterType="int" resultType="ProductThumbnail">
+		SELECT product.id
+			, display_info.id AS displayInfoId
+			, product.description
+			, product.content
+			, file_info.save_file_name
+			, display_info.place_name
+		FROM product
+			INNER JOIN display_info
+				ON product.id = display_info.product_id
+			INNER JOIN category
+				ON product.category_id = category.id
+			INNER JOIN product_image
+				ON product.id = product_image.product_id
+			INNER JOIN file_info
+				ON product_image.file_id = file_info.id
+		WHERE product_image.type = "th"
+		<if test ="categoryId != 0">
+			AND category.id = #{categoryId}
+		</if>
+		ORDER BY product.id ASC limit #{start}, #{limit}
+	</select>
+
+	<select id="getProductThumbnailCountByCategoryId" parameterType="int" resultType="long">
+		SELECT COUNT(*)
+		FROM product
+			INNER JOIN display_info
+				ON product.id = display_info.product_id
+			INNER JOIN category
+				ON product.category_id = category.id
+			INNER JOIN product_image
+				ON product.id = product_image.product_id
+			INNER JOIN file_info
+				ON product_image.file_id = file_info.id
+		WHERE product_image.type = "th"
+		<if test ="categoryId != 0">
+			AND category.id = #{categoryId}
+		</if>
+	</select>
+
+</mapper>

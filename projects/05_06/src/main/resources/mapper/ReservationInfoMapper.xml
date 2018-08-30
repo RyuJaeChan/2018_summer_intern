@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nts.connect.pjt3.mapper.ReservationInfoMapper">
+	<resultMap id="ReservationInfoResult" 
+			type="com.nts.connect.pjt3.dto.ReservationInfo" >
+ 		<result property="id" column="id" />
+ 		<collection
+ 			property="reservationPriceList"
+ 			column="id"
+ 			javaType="java.util.ArrayList"
+ 			ofType="ReservationPrice"
+ 			select="com.nts.connect.pjt3.mapper.ReservationPriceMapper.selectReservationPrices">
+ 		</collection>
+ 		 <collection
+ 			property="product"
+ 			column="product_id"
+ 			select="com.nts.connect.pjt3.mapper.ProductMapper.selectProduct">
+ 		</collection>
+	</resultMap>
+	
+	<resultMap id="ReservationInfoWithPrice"
+			type="com.nts.connect.pjt3.dto.ReservationInfo">
+ 		<result property="id" column="id" />
+ 		<result property="productId" column="reservation_info.product_id" />
+ 		<collection
+ 			property="totalPrice"
+ 			column="id"
+ 			javaType="long"
+ 			ofType="long"
+ 			select="com.nts.connect.pjt3.mapper.ReservationPriceMapper.selectTotalPrice">
+ 		</collection>
+ 		 <collection
+ 			property="product"
+ 			column="product_id"
+ 			select="com.nts.connect.pjt3.mapper.ProductMapper.selectProduct">
+ 		</collection>
+	</resultMap>
+	
+	<sql id="SELECT_FIELD">
+		SELECT ri.id
+			, ri.product_id
+			, ri.reservation_name
+			, ri.reservation_email 
+			, ri.reservation_tel
+			, ri.reservation_date
+			, ri.create_date
+			, ri.modify_date
+	</sql>
+	
+	<select id="selectReservationInfoById"
+			resultMap="ReservationInfoResult">
+		<include refid="SELECT_FIELD" />
+		FROM reservation_info AS ri
+		WHERE ri.id = #{id}
+	</select>
+	
+	<select id="selectReservationInfoByEmail"
+			resultMap="ReservationInfoWithPrice">
+		<include refid="SELECT_FIELD" />
+		FROM reservation_info AS ri
+		WHERE ri.reservation_email = #{email}
+		<choose>
+			<when test="type.name().equals('Confirmed')">
+				<![CDATA[
+				AND ri.reservation_date >= DATE_FORMAT(NOW()-1, "%Y-%c-%e") 
+				]]>	
+				AND ri.cancel_flag = 0
+			</when>
+			<when test="type.name().equals('Used')">
+				<![CDATA[
+				AND ri.reservation_date < DATE_FORMAT(NOW()-1, "%Y-%c-%e")
+				]]>	
+				AND ri.cancel_flag = 0
+			</when>
+			<when test="type.name().equals('Canceled')">
+				AND ri.cancel_flag = 1
+			</when>
+		</choose>
+	</select>
+	
+	<update id="cancelReservationInfo" parameterType="ReservationInfo">
+		UPDATE reservation_info
+		SET cancel_flag = 1
+		WHERE id = #{id}
+	</update>
+
+	<insert id="insertReservation"
+			parameterType="ReservationInfo" 
+			useGeneratedKeys="true"
+			keyProperty="id">
+		INSERT INTO reservation_info (
+			product_id,
+			reservation_name,
+			reservation_tel,
+			reservation_email,
+			reservation_date,
+			create_date,
+			modify_date
+		)
+		VALUES(
+			#{productId},
+			#{reservationName},
+			#{reservationTel},
+			#{reservationEmail},
+			#{reservationDate},
+			NOW(),
+			NOW()
+		)
+	</insert>
+</mapper>

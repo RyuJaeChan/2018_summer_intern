@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nts.connect.pjt3.mapper.ProductMapper">
+ 
+ 	<resultMap type="com.nts.connect.pjt3.dto.Product" id="ProductResult">
+ 		<result property="id" column="id" />
+ 		<collection property="userCommentList" column="id" javaType="java.util.ArrayList" ofType="UserComment" select="com.nts.connect.pjt3.mapper.UserCommentMapper.selectUserCommentLimit"></collection>
+	</resultMap>
+	<select id="selectProductByDisplayInfotId" resultMap="ProductResult">
+		SELECT product.id
+			, category.id AS categoryId
+			, category.name
+			, display_info.id AS displayInfoId
+			, product.description
+			, product.content
+			, product.event
+			, display_info.opening_hours
+			, display_info.place_name
+			, display_info.place_lot
+			, display_info.place_street
+			, display_info.tel
+			, display_info.homepage
+			, display_info.email
+			, display_info.create_date
+			, display_info.modify_date
+			, file_info.save_file_name
+		FROM product 
+			INNER JOIN display_info
+				ON product.id = display_info.product_id
+			INNER JOIN category
+				ON product.category_id = category.id
+			INNER JOIN product_image
+				ON product.id = product_image.product_id
+			INNER JOIN file_info
+				ON product_image.file_id = file_info.id
+		WHERE product_image.type = "ma"
+			AND display_info.id = ${displayInfoId}
+	</select>
+</mapper>

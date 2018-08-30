@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nts.connect.pjt3.mapper.UserCommentMapper">
+	<select id="selectUserCommentLimit" resultType="UserComment">
+		SELECT reservation_user_comment.id
+			, reservation_user_comment.product_id
+			, reservation_user_comment.comment
+			, reservation_user_comment.score
+			, reservation_user_comment.create_date
+			, reservation_user_comment.modify_date
+			, reservation_info.reservation_email
+			, reservation_info.reservation_date
+		FROM reservation_user_comment 
+			INNER JOIN reservation_info
+				ON reservation_info.id = reservation_user_comment.reservation_info_id
+		WHERE reservation_user_comment.product_id = #{productId}
+		LIMIT 3
+	</select>
+	<select id="selectUserCommentAll" resultType="UserComment">
+		SELECT reservation_user_comment.id
+			, reservation_user_comment.product_id
+			, reservation_user_comment.comment
+			, reservation_user_comment.score
+			, reservation_user_comment.create_date
+			, reservation_user_comment.modify_date
+			, reservation_info.reservation_email
+			, reservation_info.reservation_date
+		FROM reservation_user_comment
+			INNER JOIN reservation_info
+				ON reservation_info.id = reservation_user_comment.reservation_info_id
+		WHERE reservation_user_comment.product_id = #{productId}
+	</select>
+	<select id="selectAverageScore" resultType="BigDecimal">
+		SELECT AVG(score)
+		FROM reservation_user_comment
+			INNER JOIN reservation_info
+				ON reservation_info.id = reservation_user_comment.reservation_info_id
+		WHERE reservation_user_comment.product_id = #{productId}
+	</select>
+	<select id="selectCommentCount" resultType="long">
+		SELECT COUNT(*)
+		FROM reservation_user_comment
+			INNER JOIN reservation_info
+				ON reservation_info.id = reservation_user_comment.reservation_info_id
+		WHERE reservation_user_comment.product_id = #{productId}
+	</select>
+</mapper>
