@@ -1,0 +1,213 @@
+@charset "UTF-8";
+
+:root {
+  --background-color: #ddd;
+  --index_block_color: #345461;
+  --element_block_color: #cee5ef;
+  --button_color: #2196f3;
+  --button_text_color: #fff;
+  --back_button_color: #fff;
+  --back_button_text_color: #000;
+}
+
+body {
+  background-color: var(--background-color);
+}
+
+.wrap {
+  width: calc(100% - 50px);
+  margin: 0 auto;
+  background-color: white;
+  border-radius: 5px;
+  font-family: '맑은 고딕', 'Apple SD Gothic Neo', sans-serif;
+}
+
+/*
+* main.jsp
+*/
+header p{
+  text-align: center;
+  width: 300px;
+  position: relative;
+  top: 90px;
+  font-size: 35px;
+  transform: rotate(-35deg);
+  color: var(--index_block_color);
+  font-weight: bold;
+}
+
+.main_con {
+  margin: 0 auto;
+  margin-top: 100px;
+  width: 80%;
+}
+
+.main_con a {
+  float: right;
+  display: block;
+  text-align: center;
+  height: 50px;
+  width: 150px;
+  line-height: 50px;
+  margin-right: 10px;
+  border-radius: 5px;
+  box-shadow: 2px 2px 1px gray;
+  background-color: var(--button_color);
+}
+
+.main_con a:link {
+  text-decoration: none;
+  color: white;
+}
+
+.main_con a:visited {
+  text-decoration: none;
+  color: white;
+}
+
+.error_div {
+  text-align: center;
+}
+
+.table {
+  display: flex;
+  clear: both;
+}
+
+.table div{
+  width : 33.333%;
+}
+
+.table ul {
+  width: 100%;
+  height: 100%;
+  list-style: none;
+  padding: 0;
+}
+
+.table h1 {
+  background: var(--index_block_color);
+  color: white;
+  border-radius: 5px;
+  margin: 10px;
+  height: 60px;
+  line-height: 60px;
+  padding-left: 15px;
+}
+
+.table li {
+  padding: 10px;
+  border-radius: 5px;
+  margin: 10px;
+  background: var(--element_block_color);
+  height: 110px;
+  overflow: visible;
+}
+
+.table li h3 {
+  margin: 0;
+  margin-top: 5px;
+}
+
+.table li button {
+  float: right;
+  margin-right: 10px;
+  font-weight: bold;
+  font-size: 15px;
+  line-height: 20px;
+  background-color: var(--index_block_color);
+  color: white;
+}
+
+
+/*
+* todoForm.jsp
+*/
+
+.input_header {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-align: center;
+}
+
+.input_con {
+  margin-left: auto;
+  margin-right: auto;
+  width: 500px;
+  background-color: white;
+}
+
+.input_form ul {
+  list-style: none;
+  display: block;
+  padding-left: 0px;
+}
+
+.input_form li {
+  margin-left: 0px;
+}
+
+.input_form label {
+  font-size: 17px;
+}
+
+.input_form input {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  height: 30px;
+  border-radius: 5px;
+  font-size: 17px;
+}
+
+.input_area {
+  margin-bottom: 10px;
+  height: 250px;
+}
+
+#todo {
+  width: 100%;
+}
+
+.checkbox_ul {
+  margin-top: -10px;
+  padding-left: 0px;
+}
+
+.checkbox_ul li {
+  float: left;
+  margin-right: 20px;
+  height: 40px;
+}
+
+.checkbox_ul input {
+  position: relative;
+  top: 9px;
+}
+
+.button_area {
+  width: 100%;
+  height: 80px;
+  margin-top: 10px;
+}
+
+.button_area button {
+  float: right;
+  margin-left: 10px;
+  width: 100px;
+  height: 40px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+  font-size: 15px;
+  color: var(--button_text_color);
+  background-color: var(--button_color);
+  box-shadow: 2px 2px 1px gray;
+}
+
+#back_button {
+  float: left;
+  margin-left: 0px;
+  border: 2px solid gray;
+  color: var(--back_button_text_color);
+  background-color: var(--back_button_color);
+}
