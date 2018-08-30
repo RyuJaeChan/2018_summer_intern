@@ -114,3 +114,16 @@ public class WebMvcContextConfiguration extends WebMvcConfigurerAdapter {
 	}
 }
 ```
+
+
+lombok
+---
+
+dependency 추가
+```xml
+
+```
+
+설치된 경로 ```C:\Users\USER\.m2\repository\org\projectlombok\lombok\1.18.2```에 가서 lombok.jar 파일을 실행시켜 설치한다.
+
+![](https://i.imgur.com/2YrPruJ.png)
